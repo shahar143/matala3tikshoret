@@ -67,9 +67,17 @@ int main(){
     for(int i = FILE_SIZE_IN_BYTES/2; i< FILE_SIZE_IN_BYTES; i++){
         fscanf(myFile, "%c", &second_half_message[i]);
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    printf("sender: sending the first half of the file\n");
+    for (;;)
+    {
+    int key;
+    printf("Send again(1) exit(0)")
+        int pressed = scanf("%d" , &key);
+        if (pressed == 0)
+            {printf("Exiting now!")
+            close(socket_fd);
+            exit(0);}
+        else if (pressed == 1) {
+         printf("sender: sending the first half of the file\n");
 
     receive_message_from_server(socket_fd);
 
@@ -103,7 +111,46 @@ int main(){
     receive_message_from_server(socket_fd);
 
     sleep(3);
-    close(socket_fd);
+        }
+    else {printf("Unkown command please press 0 for exit or 1 to send again");}
+
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////
+//     printf("sender: sending the first half of the file\n");
+
+//     receive_message_from_server(socket_fd);
+
+//     send_message_to_server(first_half_message, socket_fd);
+
+//     receive_message_from_server(socket_fd);
+
+//     printf("i got here\n");
+//     int result = 0;
+//     int bytes_received = recv(socket_fd, &result, sizeof(result), 0);
+//     if (bytes_received == -1) {
+//         printf("recv() failed with error code : %d", errno);
+//     } else if (bytes_received == 0) {
+//         printf("peer has closed the TCP connection prior to recv().\n");
+//     } else {
+//         printf("received %d bytes from server: %d\n", bytes_received, result);
+//     }
+
+//     if(xor != result){
+//         printf("FRAUD!!!!\n");
+//         close(socket_fd);
+//         exit(1);
+//     }
+
+//     sleep(3);
+
+//     printf("sending the second part of the file\n");
+
+//     send_message_to_server(second_half_message, socket_fd);
+
+//     receive_message_from_server(socket_fd);
+
+//     sleep(3);
+//     close(socket_fd);
     return 0;
 }
 
