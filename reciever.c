@@ -12,6 +12,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 
 #define SERVER_PORT 5060
 #define FILE_SIZE_IN_BYTES 1979599
@@ -25,7 +26,6 @@ int main(){
     int dtaz1 = 0700;
     int dtaz2 = 8577;
     int xor = dtaz1 ^ dtaz2;
-    char* bxor = dec2bin(xor);
 
     signal(SIGPIPE, SIG_IGN);
 
@@ -89,19 +89,33 @@ int main(){
 
     receive_file(client_socket, server_socket_fd, "destbut.txt");
 
-    send_message_to_client(bxor, client_socket, server_socket_fd, strlen(bxor) + 1);
-
     message = "look at me!! I've received the first part :)\n";
     message_len = strlen(message) + 1;
 
     send_message_to_client(message, client_socket, server_socket_fd, message_len);
 
-    sleep(1);
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    message =bxor;
-    message_len = strlen(message) + 1;
+    int num_message = xor;
 
-    send_message_to_client(message, client_socket, server_socket_fd, message_len);
+    int bytes_sent = send(client_socket, &num_message, sizeof(num_message), 0);
+    if (bytes_sent == -1) {
+        printf("send() failed with error code : %d\n", errno);
+        close(server_socket_fd);
+        close(client_socket);
+        exit(1);
+    }
+    else if (bytes_sent == 0) {
+        printf("peer has closed the TCP connection prior to send().\n");
+    }
+    else if (bytes_sent < sizeof(num_message)) {
+        printf("sent only %d bytes from the required %d.\n", num_message, bytes_sent);
+    }
+    else {
+        printf("message was successfully sent.\n");
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sleep(3);
 
