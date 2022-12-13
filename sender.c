@@ -59,7 +59,7 @@ int main(){
     //read file into array
 
     char first_half_message[FILE_SIZE_IN_BYTES/2];
-    for (int i = 0; i < FILE_SIZE_IN_BYTES; i++){
+    for (int i = 0; i < FILE_SIZE_IN_BYTES/2; i++){
         fscanf(myFile, "%c", &first_half_message[i]);
     }
 
@@ -70,14 +70,18 @@ int main(){
     for (;;)
     {
     int key;
-    printf("Send again(1) exit(0)")
-        int pressed = scanf("%d" , &key);
-        if (pressed == 0)
+    printf("Send(1) exit(0)")
+        scanf("%d" , &key);
+        if (key == 0)
             {printf("Exiting now!")
             close(socket_fd);
             exit(0);}
-        else if (pressed == 1) {
+        else if (key == 1) {
          printf("sender: sending the first half of the file\n");
+    if(setsocketopt(socketfd,IPPROTO_TCP,TCP_CONGESTION,"cubic",5)<0)
+    {
+    printf("Error changing CC algorithm");
+    } // Change cc alogrithm
 
     receive_message_from_server(socket_fd);
 
@@ -105,6 +109,11 @@ int main(){
     sleep(3);
 
     printf("sending the second part of the file\n");
+            
+    if(setsocketopt(socketfd,IPPROTO_TCP,TCP_CONGESTION,"renu",4)<0)
+    {
+    printf("Error changing CC algorithm");
+    } // Change cc alogrithm
 
     send_message_to_server(second_half_message, socket_fd);
 
